@@ -35,7 +35,8 @@ impl MapBuilder {
                         let index = map_index(p.x, p.y);
                         self.map.tiles[index] = TileType::Floor;
                     }
-                })
+                });
+                self.rooms.push(room)
             }
         }
     }

@@ -47,10 +47,10 @@ impl Map {
                 let idx = map_index(x, y);
                 match self.tiles[idx] {
                     TileType::Floor => {
-                        ctx.set(x, y, YELLOW, BLACK, to_cp437('.'));
+                        ctx.set(x, y, KHAKI, BLACK, to_cp437('.'));
                     }
                     TileType::Wall => {
-                        ctx.set(x, y, GREEN, BLACK, to_cp437('#'));
+                        ctx.set(x, y, CHOCOLATE, BLACK, to_cp437('#'));
                     }
                 }
             }
