@@ -29,7 +29,7 @@ impl Map {
     }
 
     // retrieves a tile index if in bounds
-    pub fn tile_index(&self, point: Point) -> Option<usize> {
+    pub fn try_index(&self, point: Point) -> Option<usize> {
         if !self.in_bounds(point) {
             None
         } else {
