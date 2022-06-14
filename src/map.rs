@@ -6,6 +6,7 @@ const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 pub enum TileType {
     Wall,
     Floor,
+    Empty,
 }
 
 // Retrieves tile index
@@ -20,7 +21,7 @@ pub struct Map {
 impl Map {
     pub fn new() -> Self {
         Self {
-            tiles: vec![TileType::Floor; NUM_TILES],
+            tiles: vec![TileType::Empty; NUM_TILES],
         }
     }
 
@@ -51,6 +52,9 @@ impl Map {
                     }
                     TileType::Wall => {
                         ctx.set(x, y, CHOCOLATE, BLACK, to_cp437('#'));
+                    }
+                    TileType::Empty => {
+                        ctx.set(x, y, BLACK, BLACK, to_cp437(' '));
                     }
                 }
             }

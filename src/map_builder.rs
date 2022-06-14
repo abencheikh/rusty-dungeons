@@ -15,8 +15,8 @@ impl MapBuilder {
     fn build_random_rooms(&mut self, rng: &mut RandomNumberGenerator) {
         while self.rooms.len() < NUM_ROOMS {
             let room = Rect::with_size(
-                rng.range(1, SCREEN_WIDTH - 10),
-                rng.range(1, SCREEN_HEIGHT - 10),
+                rng.range(2, SCREEN_WIDTH - 12),
+                rng.range(2, SCREEN_HEIGHT - 12),
                 rng.range(2, 10),
                 rng.range(2, 10),
             );
@@ -34,6 +34,27 @@ impl MapBuilder {
                     if p.x > 0 && p.x < SCREEN_WIDTH && p.y > 0 && p.y < SCREEN_HEIGHT {
                         let index = map_index(p.x, p.y);
                         self.map.tiles[index] = TileType::Floor;
+                        
+                        //building walls
+                        let index_left = map_index(p.x - 1, p.y);
+                        if self.map.tiles[index_left] == TileType::Empty {
+                            self.map.tiles[index] = TileType::Wall;
+                        }
+
+                        let index_up = map_index(p.x, p.y - 1);
+                        if self.map.tiles[index_up] == TileType::Empty {
+                            self.map.tiles[index_up] = TileType::Wall;
+                        }
+
+                        let index_right = map_index(p.x + 1, p.y);
+                        if self.map.tiles[index_right] == TileType::Empty {
+                            self.map.tiles[index_right] = TileType::Wall;
+                        }
+
+                        let index_bottom = map_index(p.x, p.y + 1);
+                        if self.map.tiles[index_bottom] == TileType::Empty {
+                            self.map.tiles[index_bottom] = TileType::Wall;
+                        }
                     }
                 });
                 self.rooms.push(room)
@@ -47,7 +68,20 @@ impl MapBuilder {
         for y in min(y1, y2)..=max(y1, y2) {
             if let Some(index) = self.map.try_index(Point::new(x, y)) {
                 self.map.tiles[index as usize] = TileType::Floor;
-            }
+            
+                // building walls
+                if let Some(index_left) = self.map.try_index(Point::new(x - 1, y)) {
+                    if self.map.tiles[index_left as usize] == TileType::Empty {
+                        self.map.tiles[index_left as usize] = TileType::Wall;
+                    }
+                }
+
+                if let Some(index_right) = self.map.try_index(Point::new(x + 1, y)) {
+                    if self.map.tiles[index_right as usize] == TileType::Empty {
+                        self.map.tiles[index_right as usize] = TileType::Wall;
+                    }
+                }
+            }        
         }
     }
 
@@ -57,6 +91,19 @@ impl MapBuilder {
         for x in min(x1, x2)..=max(x1, x2) {
             if let Some(index) = self.map.try_index(Point::new(x, y)) {
                 self.map.tiles[index as usize] = TileType::Floor;
+
+                // building walls
+                if let Some(index_top) = self.map.try_index(Point::new(x, y - 1)) {
+                    if self.map.tiles[index_top as usize] == TileType::Empty {
+                        self.map.tiles[index_top as usize] = TileType::Wall;
+                    }
+                } 
+
+                if let Some(index_bottom) = self.map.try_index(Point::new(x, y + 1)) {
+                    if self.map.tiles[index_bottom as usize] == TileType::Empty {
+                        self.map.tiles[index_bottom as usize] = TileType::Wall;
+                    }
+                } 
             }
         }
     }
@@ -87,7 +134,7 @@ impl MapBuilder {
             player_start: Point::zero(),
         };
 
-        mb.fill(TileType::Wall);
+        mb.fill(TileType::Empty);
         mb.build_random_rooms(rng);
         mb.build_corridors(rng);
         mb.player_start = mb.rooms[0].center();
